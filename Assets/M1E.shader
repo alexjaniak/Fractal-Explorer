@@ -53,7 +53,7 @@
                     if (length(z) > 2) break;
                 }
 
-                return iter/max_iter;
+                return sqrt(iter/max_iter);
             }
             ENDCG
         }
