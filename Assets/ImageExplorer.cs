@@ -6,26 +6,32 @@ public class ImageExplorer : MonoBehaviour {
     public Material material;
     public Vector2 position;
     public float scale;
+    float smoothScale;
+    Vector2 smoothPosition;
 
     private void FixedUpdate() {
-        Zoom();
-        Resize();
+        UpdateShader();
+        InputController();
     }
 
-    void Resize() {
+    void UpdateShader() {
+        smoothScale = Mathf.Lerp(smoothScale, scale, 0.5f);
+        smoothPosition = Vector2.Lerp(smoothPosition, position, 0.1f);
+
         float aspectRatio = (float)Screen.width / (float)Screen.height;
-        float scaleX = scale;
-        float scaleY = scale;
+        float scaleX = smoothScale;
+        float scaleY = smoothScale;
 
         if (aspectRatio > 1f) {
             scaleY /= aspectRatio;
         } else {
             scaleX *= aspectRatio;
         }
-        material.SetVector("_Area", new Vector4(position.x, position.y, scaleX, scaleY));
+        material.SetVector("_Area", new Vector4(smoothPosition.x, smoothPosition.y, scaleX, scaleY));
     }
 
-    void Zoom() {
+    void InputController() {
+
         //Controls zoom
         if (Input.GetKey(KeyCode.Equals)) {
             scale *= 0.99f;
@@ -34,7 +40,7 @@ public class ImageExplorer : MonoBehaviour {
             scale *= 1.01f;
         }
 
-        //Controls 
+        //Controls origin position
         if (Input.GetKey(KeyCode.A)) {
             position.x -= 0.01f * scale;
         }
@@ -49,3 +55,8 @@ public class ImageExplorer : MonoBehaviour {
         }
     }
 }
+
+//add higher percision double/decimal/BigInteger
+//add colors
+//add julia set alternatives (future itererations)
+//add tetration (explore it)
