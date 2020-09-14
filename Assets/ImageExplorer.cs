@@ -18,7 +18,9 @@ public class ImageExplorer : MonoBehaviour {
         smoothScale = Mathf.Lerp(smoothScale, scale, 0.5f);
         smoothPosition = Vector2.Lerp(smoothPosition, position, 0.1f);
 
-        float aspectRatio = (float)Screen.width / (float)Screen.height;
+        //float aspectRatio = (float)Screen.width / (float)Screen.height;
+        Rect imageRect = GetComponent<RectTransform>().rect;
+        float aspectRatio = imageRect.width / imageRect.height;
         float scaleX = smoothScale;
         float scaleY = smoothScale;
 

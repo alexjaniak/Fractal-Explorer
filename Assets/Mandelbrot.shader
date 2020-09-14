@@ -1,12 +1,17 @@
-﻿Shader "Fractals/M1E"
+﻿Shader "Fractals/Mandelbrot"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Area ("_Area", vector) = (0,0,4,4)
         _MaxIter ("_MaxIter", int) = 255
-        _Speed ("_Speed", float) = 1
-        _Repeat ("_Repeat", float) = 1
+        _Speed ("_Speed", float) = 0.5
+        _Repeat ("_Repeat", float) = 10
+        _A ("_A", vector) = (0.5,0.5,0.5,1) //Offset
+        _B ("_B", vector) = (0.5,0.5,0.5,1) //Amplitude
+        _C ("_C", vector) = (1,1,1,1) //Frequency
+        _D ("_D", vector) = (0,0.33,0.67,1) //Phase
+        //http://dev.thi.ng/gradients/
 
     }
     SubShader
@@ -25,7 +30,7 @@
             struct appdata
             {
                 float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;s
+                float2 uv : TEXCOORD0;
             };
 
             struct v2f
@@ -48,6 +53,13 @@
             float _Speed;
             float _Repeat;
 
+            //Color Vectors
+            float4 _A;
+            float4 _B;
+            float4 _C;
+            float4 _D;
+            
+
             fixed4 frag (v2f i) : SV_Target
             {
                 float4 a = float4(0.5,0.5,0.5,1);
@@ -65,10 +77,8 @@
                     z = float2(z.x*z.x - z.y*z.y, 2*z.x*z.y) + c;
                     if (length(z) > r) break;
                 }
-
-                if (iter >= _MaxIter) return 0; //black
                 
-                //interpolation
+                //exponential interpolation
                 float dist = length(z);
                 float interp = log2(log(dist)/log(r));
                 iter -= interp;
@@ -76,9 +86,12 @@
                 //calculate color
                 float iterRatio = sqrt(iter/_MaxIter);
                 float gradientPos = iterRatio * _Repeat +  _Time.y * _Speed;
-                float4 col = a + b*sin(6.28318*(c1*gradientPos+d));
+                float4 col = a + b*sin(6.28318*(_C*gradientPos+_D));
 
-                return 0;
+                if (iter >= _MaxIter) {
+                    return 0; //black
+                }
+                return col;
             }
             ENDCG
         }
