@@ -3,62 +3,85 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ImageExplorer : MonoBehaviour {
-    public Material material;
-    public Vector2 position;
-    public float scale;
-    float smoothScale;
-    Vector2 smoothPosition;
 
+    //generic fields
+    public Material image;
+    public Vector2 pos; //origin 
+    Vector2 smoothPos; 
+    public float scale; //zoom
+    float smoothScale;
+    public bool inputDetected;
+
+
+
+    //called at fixed intervals
     private void FixedUpdate() {
-        RescaleShader();
+        //main updates
         InputController();
+        RescaleShader();
     }
 
-    void RescaleShader() {
-        smoothScale = Mathf.Lerp(smoothScale, scale, 0.5f);
-        smoothPosition = Vector2.Lerp(smoothPosition, position, 0.1f);
 
-        //float aspectRatio = (float)Screen.width / (float)Screen.height;
+    //updates image area
+    void RescaleShader() {
+        //smooths zoom and position change
+        smoothScale = Mathf.Lerp(smoothScale, scale, 0.5f);
+        smoothPos = Vector2.Lerp(smoothPos, pos, 0.1f);
+
         Rect imageRect = GetComponent<RectTransform>().rect;
         float aspectRatio = imageRect.width / imageRect.height;
         float scaleX = smoothScale;
         float scaleY = smoothScale;
 
+        //updates scale based on aspect ratio
         if (aspectRatio > 1f) {
             scaleY /= aspectRatio;
         } else {
             scaleX *= aspectRatio;
         }
-        material.SetVector("_Area", new Vector4(smoothPosition.x, smoothPosition.y, scaleX, scaleY));
+
+        //applies changes to image
+        Vector4 area = new Vector4(smoothPos.x, smoothPos.y, scaleX, scaleY);
+        image.SetVector("_Area", area);
     }
 
+
+
+    //controls user input 
     void InputController() {
+        inputDetected = false; //resets every frame
 
         //Controls zoom
-        if (Input.GetKey(KeyCode.Equals)) {
+        if (Input.GetKey(KeyCode.X)) {
             scale *= 0.99f;
+            inputDetected = true;
         }
-        if (Input.GetKey(KeyCode.Minus)) {
+        if (Input.GetKey(KeyCode.Z)) {
             scale *= 1.01f;
+            inputDetected = true;
         }
 
         //Controls origin position
         if (Input.GetKey(KeyCode.A)) {
-            position.x -= 0.01f * scale;
+            pos.x -= 0.01f * scale;
+            inputDetected = true;
         }
         if (Input.GetKey(KeyCode.D)) {
-            position.x += 0.01f * scale;
+            pos.x += 0.01f * scale;
+            inputDetected = true;
         }
         if (Input.GetKey(KeyCode.W)) {
-            position.y += 0.01f * scale;
+            pos.y += 0.01f * scale;
+            inputDetected = true;
         }
         if (Input.GetKey(KeyCode.S)) {
-            position.y -= 0.01f * scale;
+            pos.y -= 0.01f * scale;
+            inputDetected = true;
         }
     }
-}
 
-//add higher percision double/decimal/BigInteger
-//add colors
-//add julia set alternatives (future itererations)
-//add tetration (explore it)
+    public void SetShaderArea(Vector4 area) {
+        pos = area;
+        scale = area.z;
+    }
+}
