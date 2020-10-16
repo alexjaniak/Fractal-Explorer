@@ -3013,6 +3013,8 @@ GameObject:
   - component: {fileID: 723638758}
   - component: {fileID: 723638757}
   - component: {fileID: 723638756}
+  - component: {fileID: 723638761}
+  - component: {fileID: 723638760}
   - component: {fileID: 723638759}
   m_Layer: 5
   m_Name: Display
@@ -3113,11 +3115,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 723638754}
   m_Enabled: 1
   m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc58fc6d63fff4c15b25044adfb6a7a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &723638760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723638754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: abc2d3ee6dee44c17b82f36a77c07e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 971811935}
-  shaderToggleGroup: {fileID: 454373183}
+  fractal: {fileID: 2100000, guid: dc70aa95cf1c94893a8d6e920d485f90, type: 2}
   maxIterInputField: {fileID: 277616126}
   speedInputField: {fileID: 456355589}
   repeatInputField: {fileID: 1345069282}
@@ -3125,6 +3139,19 @@ MonoBehaviour:
   xPosInputField: {fileID: 766938478}
   yPosInputField: {fileID: 498226798}
   scaleInputField: {fileID: 2108565011}
+--- !u!114 &723638761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723638754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23db73a4dfda4d90bf84763d6a43f35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shaderToggleGroup: {fileID: 454373183}
   fractal: {fileID: 2100000, guid: dc70aa95cf1c94893a8d6e920d485f90, type: 2}
   julia: {fileID: 4800000, guid: 7819c24c517cb4545b445796a72ec80f, type: 3}
   mandelbrot: {fileID: 4800000, guid: aaa6d1eec1c7f460cbc37aebc663bd87, type: 3}
@@ -4518,7 +4545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b19b83772b434257a76202252ca3b62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 2100000, guid: dc70aa95cf1c94893a8d6e920d485f90, type: 2}
+  imageMaterial: {fileID: 2100000, guid: dc70aa95cf1c94893a8d6e920d485f90, type: 2}
   pos: {x: 0, y: 0}
   scale: 4
   inputDetected: 0
@@ -6738,7 +6765,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1832512412}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 723638759}
+        m_MethodName: Test
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1832512412
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using UnityEngine;
 public class ImageExplorer : MonoBehaviour {
 
     //generic fields
-    public Material image;
+    public Material imageMaterial;
     public Vector2 pos; //origin 
     Vector2 smoothPos; 
     public float scale; //zoom
@@ -42,7 +42,7 @@ public class ImageExplorer : MonoBehaviour {
 
         //applies changes to image
         Vector4 area = new Vector4(smoothPos.x, smoothPos.y, scaleX, scaleY);
-        image.SetVector("_Area", area);
+        imageMaterial.SetVector("_Area", area);
     }
 
 

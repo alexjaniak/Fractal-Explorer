@@ -8,8 +8,8 @@ public class InputFieldController : MonoBehaviour {
 
     //generic fields
     public GameObject image;
-    public ToggleGroup shaderToggleGroup;
     ImageExplorer imageExpScript;
+    public Material fractal;
 
     //shader properties
     int currentMaxIter;
@@ -27,22 +27,12 @@ public class InputFieldController : MonoBehaviour {
     public TMPro.TMP_InputField yPosInputField;
     public TMPro.TMP_InputField scaleInputField;
 
-    //shader fields
-    public Material fractal;
-    public Shader julia;
-    public Shader mandelbrot;
-    string currentShader;
-    string ActiveShaderName {
-        get { return shaderToggleGroup.ActiveToggles().FirstOrDefault().name; }
-    }
-
 
 
     //called before the first frame
     void Start() {
         //initialize variables
         //& convert from nullable type (initial properties always have values)
-        currentShader = ActiveShaderName;
         currentMaxIter = (int)FetchInput(maxIterInputField);
         currentSpeed = (float)FetchInput(speedInputField);
         currentRepeat = (float)FetchInput(repeatInputField);
@@ -50,17 +40,12 @@ public class InputFieldController : MonoBehaviour {
         currentArea = (Vector4)FetchInputArea();
 
         //initizalize shader properties 
-        if (currentShader.Equals("MandelbrotToggle")) {
-            fractal.shader = mandelbrot;
-        } else {
-            fractal.shader = julia;
-        }
         fractal.SetInt("_MaxIter", currentMaxIter);
         fractal.SetFloat("_Speed", currentSpeed);
         fractal.SetFloat("_Repeat", currentRepeat);
         fractal.SetFloat("_R", currentR);
 
-        //instance of the ImageExplorer script
+        //initialize instance of the ImageExplorer script
         imageExpScript = image.GetComponent<ImageExplorer>();
     }
 
@@ -75,17 +60,6 @@ public class InputFieldController : MonoBehaviour {
 
 
     void ManageShaderProperties() {
-        //updates toggled shader
-        if (!currentShader.Equals(ActiveShaderName)) {
-            if (ActiveShaderName.Equals("MandelbrotToggle")) {
-                fractal.shader = mandelbrot;
-                currentShader = ActiveShaderName;
-            } else {
-                fractal.shader = julia;
-                currentShader = ActiveShaderName;
-            }
-        }
-
         //updates shader properties
         //float properties
         SetFloatInShader("_Speed", speedInputField, ref currentSpeed);
@@ -146,11 +120,11 @@ public class InputFieldController : MonoBehaviour {
 
     //updates input field text
     void UpdateInputFields() {
-        Vector4 shaderArea = fractal.GetVector("_Area");
-        xPosInputField.text = shaderArea.x.ToString();
-        yPosInputField.text = shaderArea.y.ToString();
-        scaleInputField.text = shaderArea.z.ToString();
-        currentArea = shaderArea;
+        Vector4 imageArea = fractal.GetVector("_Area");
+        xPosInputField.text = imageArea.x.ToString();
+        yPosInputField.text = imageArea.y.ToString();
+        scaleInputField.text = imageArea.z.ToString();
+        currentArea = imageArea;
     }
 }
 

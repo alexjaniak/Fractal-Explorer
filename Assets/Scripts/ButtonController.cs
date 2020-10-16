@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ButtonController : MonoBehaviour
 {
@@ -14,5 +15,9 @@ public class ButtonController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void Test() {
+        print("test");
     }
 }
