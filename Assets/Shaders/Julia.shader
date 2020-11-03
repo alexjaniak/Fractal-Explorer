@@ -3,10 +3,22 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Area ("_Area", vector) = (0,0,4,4)
-        _MaxIter ("_MaxIter", int) = 255
-        _Speed ("_Speed", float) = 0.5
-        _Repeat ("_Repeat", float) = 10
+        _Area("_Area", vector) = (0,0,4,4)
+        _MaxIter("_MaxIter", int) = 255
+        _Speed("_Speed", float) = 0.5
+        _Repeat("_Repeat", float) = 10
+        _R("_R", float) = 20
+        _c("_c", vector) = (0,0,0,0)
+        _Rotate("_Rotate", float) = 0
+        _RotateSpeed("_RotateSpeed", float) = 1
+        _Interp("_Interp",float) = 1
+
+
+        _A("_A", vector) = (0.5,0.5,0.5,1) //Offset 
+        _B("_B", vector) = (0.5,0.5,0.5,1) //Amplitude
+        _C("_C", vector) = (1,1,1,1)       //Frequency 
+        _D("_D", vector) = (0,0.33,0.67,1) //Phase
+        //http://dev.thi.ng/gradients/
     }
     SubShader
     {
@@ -40,40 +52,45 @@
                 o.uv = v.uv;
                 return o;
             }
-    
+            
+            //public property values
             float _MaxIter;
             float4 _Area;
             float _Speed;
             float _Repeat;
-            
+            float2 _c;
+            float _Rotate;
+            float _RotateSpeed;
+            float _Interp;
+            float _R;
+
+            //Color Vectors 
+            float4 _A;
+            float4 _B;
+            float4 _C;
+            float4 _D;
+
             sampler2D _MainTex;
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float4 _A = float4(0.5,0.5,0.5,1);
-                float4 _B = float4(0.5,0.5,0.5,1);
-                float4 _C = float4(1,1,1,1);
-                float4 _D = float4(0,0.33,0.67,1);  
-
-
+                if (_Rotate == 1) {
+                    _c = 0.7885 * float2(cos(_Time.y * 0.5*_RotateSpeed),sin(_Time.y * 0.5 * _RotateSpeed));
+                }
                 float2 z = _Area.zw*(i.uv-0.5)+_Area.xy;
-
-
-                float2 c = 0.7885*float2(cos(_Time.y*0.5),sin(_Time.y*0.5));
-
- 
-                float r = 20;
                 float iter;
 
                 for (iter = 0; iter < _MaxIter; iter++) {
-                    z = float2(z.x*z.x - z.y*z.y, 2*z.x*z.y) + c;
-                    if (length(z) > r) break;
+                    z = float2(z.x*z.x - z.y*z.y, 2*z.x*z.y) + _c;
+                    if (length(z) >_R) break;
                 }
 
-                //interpolation 
-                float dist = length(z);
-                float interp = log2(log(dist)/log(r));
-                iter -= interp;
+                //exponential interpolation
+                if (_Interp == 1) {
+                    float dist = length(z);
+                    float interp = log2(log(dist) / log(_R));
+                    iter -= interp;
+                }
 
                 //calculate color
                 float iterRatio = sqrt(iter/_MaxIter);

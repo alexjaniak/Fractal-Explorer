@@ -41,8 +41,8 @@ public class ImageExplorer : MonoBehaviour {
         }
 
         //applies changes to image
-        Vector4 area = new Vector4(smoothPos.x, smoothPos.y, scaleX, scaleY);
-        imageMaterial.SetVector("_Area", area);
+        Vector4 scaledArea = new Vector4(smoothPos.x, smoothPos.y, scaleX, scaleY);
+        imageMaterial.SetVector("_Area", scaledArea);
     }
 
 
@@ -50,7 +50,7 @@ public class ImageExplorer : MonoBehaviour {
     //controls user input 
     void InputController() {
         inputDetected = false; //resets every frame
-
+ 
         //Controls zoom
         if (Input.GetKey(KeyCode.X)) {
             scale *= 0.99f;
@@ -80,8 +80,16 @@ public class ImageExplorer : MonoBehaviour {
         }
     }
 
-    public void SetShaderArea(Vector4 area) {
-        pos = area;
-        scale = area.z;
+    public Vector4 RawArea
+    {
+        get
+        {
+            return new Vector4(pos.x, pos.y, scale, scale);
+        }
+        set
+        {
+            pos = new Vector2(value.x, value.y);
+            scale = value.z;
+        }
     }
 }

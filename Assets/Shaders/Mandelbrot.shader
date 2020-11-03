@@ -8,10 +8,11 @@
         _R ("_R", int) = 20
         _Speed ("_Speed", float) = 0.5
         _Repeat ("_Repeat", float) = 10
+        _Interp ("_Interp",float) = 1
 
         _A ("_A", vector) = (0.5,0.5,0.5,1) //Offset 
         _B ("_B", vector) = (0.5,0.5,0.5,1) //Amplitude
-        _C ("_C", vector) = (1,1,1,1) //Frequency 
+        _C ("_C", vector) = (1,1,1,1)       //Frequency 
         _D ("_D", vector) = (0,0.33,0.67,1) //Phase
         //http://dev.thi.ng/gradients/
 
@@ -55,6 +56,7 @@
             float _Speed;
             float _Repeat;
             float _R;
+            float _Interp;
 
             //Color Vectors 
             float4 _A;
@@ -65,12 +67,6 @@
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float4 a = float4(0.5,0.5,0.5,1);
-                float4 b = float4(0.5,0.5,0.5,1);
-                float4 c1 = float4(1,1,1,1);
-                float4 d = float4(0,0.33,0.67,1);  
-
-
                 float2 c = _Area.zw*(i.uv-0.5)+_Area.xy;
                 float2 z;
                 float iter;
@@ -81,18 +77,21 @@
                 }
                 
                 //exponential interpolation 
-                float dist = length(z);
-                float interp = log2(log(dist)/log(_R));
-                iter -= interp;
-
+                if (_Interp == 1) {
+                    float dist = length(z);
+                    float interp = log2(log(dist) / log(_R));
+                    iter -= interp;
+                }
+                
                 //calculate color
                 float iterRatio = sqrt(iter/_MaxIter);
                 float gradientPos = iterRatio * _Repeat +  _Time.y * _Speed;
-                float4 col = a + b*sin(6.28318*(_C*gradientPos+_D));
+                float4 col = _A + _B*sin(6.28318*(_C*gradientPos+_D));
 
                 if (iter >= _MaxIter) {
                     return 0; //black
                 }
+                //return iterRatio;
                 return col;
             }
             ENDCG
