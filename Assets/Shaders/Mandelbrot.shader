@@ -9,6 +9,7 @@
         _Speed ("_Speed", float) = 0.5
         _Repeat ("_Repeat", float) = 10
         _Interp ("_Interp",float) = 1
+        _Gray("_Gray",float) = 0
 
         _A ("_A", vector) = (0.5,0.5,0.5,1) //Offset 
         _B ("_B", vector) = (0.5,0.5,0.5,1) //Amplitude
@@ -57,6 +58,7 @@
             float _Repeat;
             float _R;
             float _Interp;
+            float _Gray;
 
             //Color Vectors 
             float4 _A;
@@ -91,6 +93,7 @@
                 if (iter >= _MaxIter) {
                     return 0; //black
                 }
+                if (_Gray == 1) return iterRatio;
                 //return iterRatio;
                 return col;
             }

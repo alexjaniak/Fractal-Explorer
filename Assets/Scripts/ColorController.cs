@@ -22,7 +22,7 @@ public class ColorController : MonoBehaviour
     //color presets
     Vector4[] custom;
     Vector4[] rainbow1;
-    Vector4[] grayScale;
+    Vector4[] grayScale2;
 
     //updated fields for each object 
     public string propertyName;
@@ -65,10 +65,16 @@ public class ColorController : MonoBehaviour
         if(index == 0)
         {
             SetPreset(rainbow1);
+            fractal.SetFloat("_Gray", 0);
         }
         else if (index == 1)
         {
-            SetPreset(grayScale);
+            fractal.SetFloat("_Gray", 1);
+        }
+        else if (index == 2)
+        {
+            SetPreset(grayScale2);
+            fractal.SetFloat("_Gray", 0);
         }
     }
 
@@ -200,7 +206,7 @@ public class ColorController : MonoBehaviour
             Vector4.one,
             new Vector4(0f, 0.33f, 0.67f, 1f)};
 
-        grayScale = new Vector4[] {
+        grayScale2 = new Vector4[] {
             new Vector4(0.5f, 0.5f, 0.5f, 1f),
             new Vector4(0.5f, 0.5f, 0.5f, 1f),
             Vector4.one,

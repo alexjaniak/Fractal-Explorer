@@ -12,7 +12,7 @@
         _Rotate("_Rotate", float) = 0
         _RotateSpeed("_RotateSpeed", float) = 1
         _Interp("_Interp",float) = 1
-
+        _Gray("_Gray",float) = 0
 
         _A("_A", vector) = (0.5,0.5,0.5,1) //Offset 
         _B("_B", vector) = (0.5,0.5,0.5,1) //Amplitude
@@ -63,6 +63,7 @@
             float _RotateSpeed;
             float _Interp;
             float _R;
+            float _Gray;
 
             //Color Vectors 
             float4 _A;
@@ -98,6 +99,7 @@
                 float4 col = _A + _B*sin(6.28318*(_C*gradientPos+_D));
 
                 if (iter >= _MaxIter) return 0; //black
+                if (_Gray == 1) return iterRatio;
                 return col;
             }
             ENDCG

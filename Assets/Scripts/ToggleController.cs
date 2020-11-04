@@ -7,31 +7,26 @@ using UnityEditor;
 
 public class ToggleController : MonoBehaviour
 {
-    //generic objects
-    public GameObject juliaProperties;
+    //menu objects
+    public GameObject typeMenu;
+    public GameObject propMenu;
+    public GameObject gradientMenu;
+    public GameObject juliaMenu;
+    public GameObject colorMenu;
+
+    //generic fields
     public ToggleGroup shaderToggleGroup;
-    public Toggle rotate;
-    public Toggle interp;
     public GameObject realComponentInput;
     public GameObject imagComponentInput;
     public GameObject rotateSpeedInput;
     public GameObject fractalImage;
     ImageExplorer imageExpScript;
 
-    //generic fields
-    float currentInterp = 1;
-    float newInterp;
-    float currentRotate = 0;
-    float newRotate;
-
     //shader fields
     public Material fractal;
     public Shader julia;
     public Shader mandelbrot;
-    string currentShader;
-    string ActiveShaderName {
-        get { return shaderToggleGroup.ActiveToggles().FirstOrDefault().name; }
-    }
+    string activeShader;
 
     //called before the first frame
     void Start()
@@ -40,70 +35,54 @@ public class ToggleController : MonoBehaviour
         imageExpScript = fractalImage.GetComponent<ImageExplorer>();
 
         //initialize shader
-        currentShader = ActiveShaderName;
-        if (currentShader.Equals("MandelbrotToggle")) {
-            fractal.shader = mandelbrot;
-            juliaProperties.SetActive(false);
-        } else {
-            fractal.shader = julia;
-            juliaProperties.SetActive(true);
-        }
+        fractal.shader = mandelbrot;
+        activeShader = "Mandelbrot";
+        juliaMenu.SetActive(false);
 
         //initialize shader properties
-        fractal.SetFloat("_Rotate", currentRotate);
-        fractal.SetFloat("_Interp", currentInterp);
+        fractal.SetFloat("_Rotate", 0);
+        fractal.SetFloat("_Interp", 1);
     }
 
-    //called at fixed intervals
-    void FixedUpdate()
+    public void UpdateShader(string name)
     {
-        UpdateShader();
-        UpdateRotateToggle();
-        UpdateInterpToggle();
-    }
-
-    //updates toggled shader
-    void UpdateShader() {
-        if (!currentShader.Equals(ActiveShaderName)) {
-            if (ActiveShaderName.Equals("MandelbrotToggle")) {
-                fractal.shader = mandelbrot;
-                currentShader = ActiveShaderName;
-                juliaProperties.SetActive(false);
-                imageExpScript.RawArea = new Vector4(0, 0, 5, 5);
-            } else {
-                fractal.shader = julia;
-                currentShader = ActiveShaderName;
-                juliaProperties.SetActive(true);
-                imageExpScript.RawArea = new Vector4(0, 0, 5, 5);
-            }
+        if (name.Equals("Mandelbrot"))
+        {
+            activeShader = "Mandelbrot";
+            fractal.shader = mandelbrot;
+            juliaMenu.SetActive(false);
+            imageExpScript.RawArea = new Vector4(0, 0, 5, 5);
+        }
+        else
+        {
+            activeShader = "Julia";
+            fractal.shader = julia;
+            juliaMenu.SetActive(true);
+            imageExpScript.RawArea = new Vector4(0, 0, 5, 5);
         }
     }
 
     //update input fields with rotate toggle value
-    void UpdateRotateToggle()
+    public void UpdateRotateToggle(bool value)
     {
-        if (rotate.isOn) newRotate = 1;
-        else newRotate = 0;
-
-        if(currentRotate != newRotate)
-        {
-            ActivateCompInputFields((!rotate.isOn));
-            rotateSpeedInput.SetActive(rotate.isOn);
-            fractal.SetFloat("_Rotate", newRotate);
-            currentRotate = newRotate;
-        }
+        ActivateCompInputFields(!value);
+        rotateSpeedInput.SetActive(value);
+        fractal.SetFloat("_Rotate", ConvertBool(value));
     }
 
-    void UpdateInterpToggle()
+    public void UpdateInterpToggle(bool value)
     {
-        if (interp.isOn) newInterp = 1;
-        else newInterp = 0;
+        fractal.SetFloat("_Interp", ConvertBool(value));
+    }
 
-        if (currentInterp != newInterp)
-        {
-            fractal.SetFloat("_Interp", newInterp);
-            currentInterp = newInterp;
-        }
+    public void UpdateManualToggle(bool value)
+    {
+        colorMenu.SetActive(value);
+        propMenu.SetActive(!value);
+        typeMenu.SetActive(!value);
+        if(activeShader.Equals("Julia")) juliaMenu.SetActive(!value);
+        if (value) gradientMenu.transform.localPosition = new Vector3(0, 318, 0);
+        else gradientMenu.transform.localPosition = new Vector3(0 ,138,0);
     }
 
     //activates/deactivates real & imaginary 
@@ -114,5 +93,11 @@ public class ToggleController : MonoBehaviour
         imagComponentInput.SetActive(active);
     }
 
-    
+    //return 1 if true and 0 when false
+    int ConvertBool(bool value)
+    {
+        if (value) return 1;
+        return 0;
+    }
+
 }
