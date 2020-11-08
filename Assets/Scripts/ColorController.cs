@@ -37,6 +37,7 @@ public class ColorController : MonoBehaviour
         //initialize color presets
         InitializePresets();
         custom = new Vector4[4];
+        fractal.SetFloat("_Gray", 0);
         SetPreset(rainbow1);
     }
 
